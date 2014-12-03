@@ -27,12 +27,13 @@ public class Server {
 				socket = serverSocket.accept();
 				// 创建一个线程，与之通信
 				ServerThread serverThread = new ServerThread(socket);
+				serverThread.setPriority(4);// 设置线程优先级，范围[1，10]，默认为5
 				// 启动线程
 				serverThread.start();
 				count++;
 				System.out.println("客户端连接数：" + count);
 				InetAddress address = socket.getInetAddress();
-				System.out.println("当前客户端Ip："+address.getHostAddress());
+				System.out.println("当前客户端Ip：" + address.getHostAddress());
 			}
 			// serverSocket.close();
 		} catch (IOException e) {

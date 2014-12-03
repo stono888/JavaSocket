@@ -21,6 +21,7 @@ public class Client {
 			pw.write("用户名:admin;密码:123");
 			pw.flush();
 			socket.shutdownOutput();// 关闭输出流
+			//pw.close();//此处关闭了就会导致socket关闭了；
 			// 获取输入流
 			InputStream is = socket.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
