@@ -1,9 +1,7 @@
 package com.srie.test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -17,26 +15,26 @@ public class Server {
 
 	public static void main(String[] args) {
 		try {
-			// 1，创建serverSocket，指定端口，并进行监听
+			// 创建serverSocket，指定端口，并进行监听
 			ServerSocket serverSocket = new ServerSocket(8888);
-			// 2,调用accept()方法，开始监听
+			Socket socket = null;
+			// 记录客户端的数量
+			int count = 0;
 			System.out.println("***服务器即将启动，等待客户端连接***");
-			Socket socket = serverSocket.accept();
-			// 3，获取输入流，读取客户端发送的信息
-			InputStream is = socket.getInputStream();// 字节流
-			InputStreamReader isr = new InputStreamReader(is);// 字符流
-			BufferedReader br = new BufferedReader(isr);// 为输入流添加缓冲
-			String info = null;
-			while ((info = br.readLine()) != null) {
-				System.out.println("我是服务器，客户端说：" + info);
+			// 循环监听客户端的连接
+			while (true) {
+				// 调用accept()方法，开始监听
+				socket = serverSocket.accept();
+				// 创建一个线程，与之通信
+				ServerThread serverThread = new ServerThread(socket);
+				// 启动线程
+				serverThread.start();
+				count++;
+				System.out.println("客户端连接数：" + count);
+				InetAddress address = socket.getInetAddress();
+				System.out.println("当前客户端Ip："+address.getHostAddress());
 			}
-			socket.shutdownInput();
-			// 4,关闭资源
-			br.close();
-			isr.close();
-			is.close();
-			socket.close();
-			serverSocket.close();
+			// serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
